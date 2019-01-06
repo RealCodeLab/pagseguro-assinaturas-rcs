@@ -9,11 +9,11 @@
                 <span class="input-text-wrap">
                     <select class="_is_plano change_to" name="_is_plano">
                         <?php
-                        $options = array(
-                            '' => __('— No Change —', 'woocommerce'),
+                        $options = [
+                            ''    => __('— No Change —', 'woocommerce'),
                             'yes' => __('Yes', 'woocommerce'),
-                            'no' => __('No', 'woocommerce')
-                        );
+                            'no'  => __('No', 'woocommerce'),
+                        ];
                         foreach ($options as $key => $value) {
                             echo '<option value="' . esc_attr($key) . '">' . $value . '</option>';
                         }

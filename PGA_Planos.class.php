@@ -1,35 +1,39 @@
 <?php
 
-class PGA_Planos {
+class PGA_Planos
+{
 
     public $controller;
 
-    function __construct(PGA_Controller $controller) {
+    function __construct(PGA_Controller $controller)
+    {
         $this->controller = $controller;
     }
 
-    function add_campos_plano() {
+    function add_campos_plano()
+    {
         global $woocommerce, $post;
 
         echo '
 		<fieldset class="inline-edit-col-left">
 		<div class="options_group">';
         woocommerce_wp_checkbox(
-                array(
-                    'id' => '_is_plano',
-                    'label' => __('É plano de assinatura?', 'pagseguro-assinaturas-rcs'),
-                    'desc_tip' => 'true',
-                    'description' => __('Selecione se for um produto de assinatura.', 'pagseguro-assinaturas-rcs')
-                )
+            [
+                'id'          => '_is_plano',
+                'label'       => __('É plano de assinatura?', 'pagseguro-assinaturas-rcs'),
+                'desc_tip'    => 'true',
+                'description' => __('Selecione se for um produto de assinatura.', 'pagseguro-assinaturas-rcs'),
+            ]
         );
 
         woocommerce_wp_checkbox(
-                array(
-                    'id' => '_produto_outras_formas_pagseguro',
-                    'label' => __('Outras formas de pagamento?', 'pagseguro-assinaturas-rcs'),
-                    'desc_tip' => 'true',
-                    'description' => __('Se este campo for selecionado, outras formas de pagamentos serão permitidas.', 'pagseguro-assinaturas-rcs')
-                )
+            [
+                'id'          => '_produto_outras_formas_pagseguro',
+                'label'       => __('Outras formas de pagamento?', 'pagseguro-assinaturas-rcs'),
+                'desc_tip'    => 'true',
+                'description' => __('Se este campo for selecionado, outras formas de pagamentos serão permitidas.',
+                    'pagseguro-assinaturas-rcs'),
+            ]
         );
 
         echo '</div>
@@ -40,34 +44,39 @@ class PGA_Planos {
      * Custom quick edit - form
      *
      * @access public
+     *
      * @param mixed $column_name
      * @param mixed $post_type
      */
-    function quick_edit($column_name, $post_type) {
+    function quick_edit($column_name, $post_type)
+    {
         if ('price' != $column_name || 'product' != $post_type) {
             return;
         }
 
-        include( 'includes/product-quick-edit.php' );
+        include('includes/product-quick-edit.php');
     }
 
     /**
      * Custom bulk edit - form
      *
      * @access public
+     *
      * @param mixed $column_name
      * @param mixed $post_type
      */
-    function bulk_edit($column_name, $post_type) {
+    function bulk_edit($column_name, $post_type)
+    {
         if ('price' != $column_name || 'product' != $post_type) {
             return;
         }
 
-        include( 'includes/product-bulk-edit.php' );
+        include('includes/product-bulk-edit.php');
     }
 
-    function save_campos_plano($post_id) {
-        $produto_is_plano = isset($_POST['_is_plano']) ? 'yes' : 'no';
+    function save_campos_plano($post_id)
+    {
+        $produto_is_plano      = isset($_POST['_is_plano']) ? 'yes' : 'no';
         $produto_outras_formas = isset($_POST['_produto_outras_formas_pagseguro']) ? 'yes' : 'no';
 
         $plano["code"] = $post_id;
@@ -77,23 +86,27 @@ class PGA_Planos {
         update_post_meta($post_id, '_produto_outras_formas_pagseguro', esc_attr($produto_outras_formas));
     }
 
-    function quick_edit_save_plano($produto) {
+    function quick_edit_save_plano($produto)
+    {
         global $retornoPagseguro;
         $this->save_campos_plano($produto->id);
     }
 
-    function bulk_edit_save_plano($produto) {
+    function bulk_edit_save_plano($produto)
+    {
         if ($_GET['_is_plano']) {
             update_post_meta($produto->id, '_is_plano', esc_attr($_GET['_is_plano']));
         }
         if ($_GET['_produto_outras_formas_pagseguro']) {
-            update_post_meta($produto->id, '_produto_outras_formas_pagseguro', esc_attr($_GET['_produto_outras_formas_pagseguro']));
+            update_post_meta($produto->id, '_produto_outras_formas_pagseguro',
+                esc_attr($_GET['_produto_outras_formas_pagseguro']));
         }
 
     }
 
-    function pga_admin_notices() {
-        if (!empty($_GET['codigo_pagseguro'])) {
+    function pga_admin_notices()
+    {
+        if ( ! empty($_GET['codigo_pagseguro'])) {
             $mensagem = $_GET['mensagem_pagseguro'];
             if ($_GET['codigo_pagseguro'] == '401') {
                 $mensagem = __('O acesso não foi autorizado (401)', 'pagseguro-assinaturas-rcs');
@@ -114,7 +127,8 @@ class PGA_Planos {
         }
     }
 
-    function admin_edit_plano_foot() {
+    function admin_edit_plano_foot()
+    {
         $slug = 'product';
 
         # load only when editing a book
@@ -123,7 +137,8 @@ class PGA_Planos {
         }
     }
 
-    function product_plano_columns($column, $post_id) {
+    function product_plano_columns($column, $post_id)
+    {
         switch ($column) {
             case 'name' :
                 $arr_meta_values = get_post_meta($post_id);
@@ -141,4 +156,5 @@ class PGA_Planos {
     }
 
 }
+
 ?>
