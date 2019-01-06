@@ -29,7 +29,7 @@ class PGA_Compra {
         }
         if ($this->controller->gateway->outras_formas_pagseguro == 'yes' && !$permitirOutros) {
             foreach ($available_gateways as $gateway_id => $gateway) {
-				if ( method_exists( $this->controller->gateway, 'get_id' ) ) {  
+				if ( method_exists( $this->controller->gateway, 'get_id' ) ) {
 					$controller_gateway_id = $this->controller->gateway->get_id();
 				} else {
 					$controller_gateway_id = $this->controller->gateway->id;
@@ -44,7 +44,7 @@ class PGA_Compra {
 
     function nao_permitir_pga($available_gateways) {
         foreach ($available_gateways as $gateway_id => $gateway) {
-			if ( method_exists( $this->controller->gateway, 'get_id' ) ) {  
+			if ( method_exists( $this->controller->gateway, 'get_id' ) ) {
 				$controller_gateway_id = $this->controller->gateway->get_id();
 			} else {
 				$controller_gateway_id = $this->controller->gateway->id;
@@ -81,7 +81,7 @@ class PGA_Compra {
 
 	// Esvazia o carrinho para substituir pelo produto sendo escolhido
 	WC()->cart->empty_cart();
-	    
+
         foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item) {
             $cart_produto_meta = get_post_meta($cart_item['product_id']);
             $cart_prod_is_plano = empty($cart_produto_meta['_is_plano']) || $cart_produto_meta['_is_plano'][0] == null ? 'no' : $cart_produto_meta['_is_plano'][0];
@@ -109,7 +109,7 @@ class PGA_Compra {
         $produto_meta = get_post_meta(get_the_id());
 
         if ($produto_meta['_is_plano'][0] == 'yes') {
-            if ($produto_meta['_taxa_contratacao'][0] > 0) {
+            if (isset($produto_meta['_taxa_contratacao']) && $produto_meta['_taxa_contratacao'][0] > 0) {
                 ?>
                 <span class="price">
                     <ins>
@@ -118,14 +118,14 @@ class PGA_Compra {
                 </span>
                 <?php
             }
-//            echo $this->plano_description($produto_meta);
+            echo $this->plano_description($produto_meta);
         }
     }
 
     function pga_woocommerce_cart_item_subtotal($subtotal, $cart_item, $cart_item_key) {
         $produto_meta = get_post_meta($cart_item['product_id']);
 
-        $total_taxa = !empty($produto_meta['_taxa_contratacao'][0]) ? $produto_meta['_taxa_contratacao'][0] * $cart_item['quantity'] : 0;
+        $total_taxa = isset($produto_meta['_taxa_contratacao']) && !empty($produto_meta['_taxa_contratacao'][0]) ? $produto_meta['_taxa_contratacao'][0] * $cart_item['quantity'] : 0;
         $subtotal .= ' <span class="amount">' . $this->intervalo_description($produto_meta) . '</span>';
         if ($total_taxa > 0 && $produto_meta['_is_plano'][0] == 'yes') {
             $subtotal .= '<br>';
@@ -184,7 +184,7 @@ class PGA_Compra {
 				$actions['force_cancel']['url'] = add_query_arg('force_cancel', $order->get_id(), PGA_Utils::get_current_url());
 			} else {
 				$actions['force_cancel']['url'] = add_query_arg('force_cancel', $order->id, PGA_Utils::get_current_url());
-			}            
+			}
             $actions['force_cancel']['name'] = __('Cancelar', 'woocommerce');
         }
 
@@ -228,7 +228,7 @@ class PGA_Compra {
         	$is_sold = get_post_meta($produto->get_id(), '_is_plano', true) == 'yes';
 		} else {
         	$is_sold = get_post_meta($produto->id, '_is_plano', true) == 'yes';
-		}        
+		}
         return $is_sold;
     }
 
@@ -280,7 +280,7 @@ class PGA_Compra {
 			$post_meta = get_post_meta($product->get_id());
 		} else {
 			$post_meta = get_post_meta($product->id);
-		}		
+		}
         if (!empty($post_meta['_is_plano']) && $post_meta['_is_plano'][0] == 'yes') {
 //            echo $this->plano_description($post_meta);
         }
