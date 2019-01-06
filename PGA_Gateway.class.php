@@ -424,7 +424,7 @@ class PGA_Gateway extends WC_Payment_Gateway
         $pgaUtils = new PGA_Utils();
 
         if ('yes' == $this->debug) {
-            $this->log->add('pagseguro', 'Generating transparent checkout for order ' . $order->id);
+            $this->log->add('pagseguro', 'Generating transparent checkout for order ' . $order_id);
         }
 
         ob_start();
